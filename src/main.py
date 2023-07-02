@@ -3,6 +3,8 @@ from os import environ
 from dotenv import load_dotenv
 from init import db, ma, bcrypt, jwt
 from blueprints.cli_bp import cli_bp
+from blueprints.auth_bp import auth_bp
+from blueprints.users_bp import users_bp
 
 def setup():
     app = Flask(__name__)
@@ -20,6 +22,8 @@ def setup():
         return {'error': str(err)}, 401
 
     app.register_blueprint(cli_bp)
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(users_bp)
 
     return app
 
