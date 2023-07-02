@@ -28,7 +28,7 @@ def one_user(user_id):
     return {'error': 'Card not found'}, 404
 
 # UPDATE (requires admin or owner)
-@users_bp.route('/<int:id>/', methods=['PUT'])
+@users_bp.route('/<int:id>/', methods=['PUT','PATCH'])
 @jwt_required()
 def update_one_user(id):
     admin_or_user_required(id)
@@ -56,32 +56,17 @@ def update_one_user(id):
     except:
        return {'error': 'Missing data fields'}
 
-# Update a specific entry using PATCH
-@users_bp.route('/<int:user_id>', methods=['PATCH'])
-def update_entry(user_id):
-    updated_fields = request.json
-
-    entry = User.query.get(user_id)
-    if not entry:
-        response = {'error': 'Entry not found'}
-        return json.dumps(response), 404, {'Content-Type': 'application/json'}
-
-    # Update only the provided fields
-    for field, value in updated_fields.items():
-        if hasattr(entry, field):
-            setattr(entry, field, value)
-
+# TODO: Fix issue all users can currently delete anyone
+# Delete a user
+@users_bp.route('/<int:user_id>', methods=['DELETE'])
+@jwt_required()
+def delete_user(user_id):
+  stmt = db.select(User).filter_by(id=user_id)
+  user = db.session.scalar(stmt)
+  if user:
+    admin_or_user_required(user_id)
+    db.session.delete(user)
     db.session.commit()
-
-    response = {
-        'id': entry.id,
-        'name': entry.name,
-        'email': entry.email,
-        'password': bcrypt.generate_password_hash(entry.password).decode('utf8') or entry.password,
-        'study_times': entry.study_times,
-        'study_location': entry.study_location,
-        'interests': entry.interests,
-        'studying': entry.studying,
-        'is_admin': entry.is_admin
-    }
-    return json.dumps(response), 200, {'Content-Type': 'application/json'}
+    return {}, 200
+  else:
+    return {'error': 'Card not found'}, 404
