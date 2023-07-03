@@ -102,6 +102,17 @@ While ORMs offer numerous benefits, it's important to consider their limitations
 
 ### **R5: Document all endpoints for your API**
 
+/users
+
+- Get request will list all users
+
+/users/id
+
+- GET request will return the user with that specified id
+- PUT or PATCH will allow you to update specific entries on the specified user
+- DELETE will remove the specified user
+
+
 /locations
 
 - Get request will list all locations
@@ -127,11 +138,77 @@ While ORMs offer numerous benefits, it's important to consider their limitations
 ### **R7: Detail any third party services that your app will use**
 
 
+**Flask**
+
+Flask is a popular Python web framework that allows developers to build web applications quickly and with ease. It is designed to be lightweight, flexible, and easy to use, making it a popular choice for both beginners and experienced Python developers. Flask follows the Model-View-Controller (MVC) architectural pattern, but it provides developers with the flexibility to choose their preferred approach to application structure.
+
+**SQLAlchemy**
+
+SQLAlchemy is an open-source Python library that provides a set of tools for working with relational databases using the SQL language. It is commonly used as an Object-Relational Mapping (ORM) tool, allowing developers to interact with databases using Python objects and methods instead of writing raw SQL queries.
+
+**Bcrypt**
+
+bcrypt is a widely used hashing algorithm specifically designed for password hashing. It is known for its security and resistance to brute-force attacks. bcrypt is an adaptive hashing algorithm, which means it can be configured to be intentionally slow, making it computationally expensive for attackers to crack passwords.
+
+**Psycopg2**
+
+Psycopg2 is a popular PostgreSQL adapter for the Python programming language. It is a library that provides an interface to interact with PostgreSQL databases from Python applications. Psycopg2 allows developers to connect to a PostgreSQL database, execute SQL queries, and work with the data returned from the database.
+
+**Flask-Marshmallow**
+
+Flask-Marshmallow is an extension for the Flask web framework that integrates the Marshmallow library, which is a popular Python library for object serialization and deserialization. Flask-Marshmallow simplifies the process of validating and serializing data in Flask applications by providing seamless integration between Flask and Marshmallow.
+
+**Python-Dotenv**
+
+Python-Dotenv is a Python library that simplifies the process of loading environment variables from a .env file into your Python applications. It allows you to store configuration settings, API keys, database connection strings, and other sensitive information in a separate file, rather than hardcoding them into your codebase.
 
 ### **R8: Describe your projects models in terms of the relationships they have with each other**
 
+**Users**
+
+id: This column is typically an auto-incrementing integer or a unique identifier that serves as a primary key for each user record. It ensures the uniqueness of each user in the table.
+
+name: This column stores the user's name, typically as a string. It allows you to store and retrieve the name of each user.
+
+email: This column is used to store the user's email address. It provides a means of identifying users and can be used for communication or authentication purposes.
+
+password (stored as a hash): This column stores the hashed representation of the user's password. Storing passwords as hashes improves security by ensuring that the actual password remains confidential. When a user logs in, their entered password is hashed and compared to the stored hash for authentication.
+
+study_times: This column represents the user's study times, such as their preferred study hours or a schedule. It can store this information in a format suitable for your application, such as a string or a serialized object.
+
+interests: This column captures the user's interests, such as subjects or topics they are interested in studying. It allows you to store and retrieve information about the user's preferences.
+
+studying: This column can be a boolean (true/false) field that indicates whether the user is currently studying. It provides a way to track and update the user's studying status.
+
+is_admin: This column can also be a boolean field that signifies whether the user has administrative privileges or not. It is useful for implementing access control and differentiating between regular users and administrators.
+
+study_locations (relationship with the location table): This column establishes a relationship between the "User" table and the "Location" table. It represents a many-to-many relationship, indicating that a user can be associated with multiple study locations, and a study location can be associated with multiple users. This relationship is typically implemented using a join table, as described in our previous discussion.
+
+By organizing your user data into these columns, you can efficiently store and retrieve information about each user, including their personal details, study preferences, and associations with study locations.
+
+**Location model**
+
+id: This column serves as a unique identifier or primary key for each location record. It ensures the uniqueness of each location in the table.
+
+name: This column stores the name or title of the location, typically as a string. It provides a way to identify and refer to each location.
+
+description: This column allows you to provide a description or additional details about the location. It can be used to provide information such as the amenities available, the environment, or any specific characteristics of the location.
+
+users_locations (relationship with the user table): This column represents a relationship between the "Location" table and the "User" table. It establishes a many-to-many relationship, indicating that a location can be associated with multiple users, and a user can be associated with multiple locations. This relationship is typically implemented using a join table, which allows you to track and manage the associations between users and locations.
+
+The "users_locations" relationship column acts as a bridge between the "Location" and "User" tables, enabling the mapping of the many-to-many relationship. It allows you to associate users with specific locations and vice versa, providing flexibility in managing the relationship between the two entities.
+
+By utilizing these columns in your "Location" table, you can store information about each location, including its name, description, and the users associated with it. This structure allows for efficient retrieval and manipulation of data, enabling you to track user-location associations and retrieve relevant information as needed.
 
 ### **R9: Discuss the database relations to be implemented in your application**
 
+In the project, there is a Many-to-Many relationship between two entities: User and Location. This means that multiple users can be associated with multiple locations, and vice versa. To implement this relationship in Flask, a join table is used. The join table serves as an intermediary table that connects the User and Location entities. It contains foreign key references to the primary keys of both tables, establishing the many-to-many relationship. The join table acts as a bridge between the User and Location models, allowing the mapping of the many-to-many relationship. It enables efficient querying and manipulation of the relationship data, providing a convenient way to manage the associations between users and locations. By utilizing a join table, Flask provides a flexible and scalable solution for handling many-to-many relationships, ensuring data integrity and ease of data retrieval between the User and Location entities.
 
 ### **R10: Describe the way tasks are allocated and tracked in your project**
+
+Managed the project mainly through trello, and completing standups on discord throughout the project
+
+![trello](./docs/trello1.PNG)
+![trello](./docs/trello2.PNG)
+![trello](./docs/trello3.PNG)
+![trello](./docs/trello4.PNG)
