@@ -1,10 +1,10 @@
 from flask_jwt_extended import jwt_required
-from blueprints.auth_bp import admin_required, admin_or_user_required
+from blueprints.auth_bp import admin_or_user_required
 from init import db, bcrypt
 from models.user import UserSchema, User
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request
 from sqlalchemy.exc import IntegrityError
-import json
+
 
 users_bp = Blueprint('users', __name__, url_prefix='/users')
 
@@ -17,7 +17,7 @@ def all_users():
     return UserSchema(many=True, exclude=['password']).dump(users)
 
 # Get one user
-@users_bp.route('/<int:card_id>')
+@users_bp.route('/<int:user_id>')
 @jwt_required()
 def one_user(user_id):
   stmt = db.select(User).filter_by(id=user_id)
@@ -25,7 +25,7 @@ def one_user(user_id):
   if user:
     return UserSchema().dump(user)
   else:
-    return {'error': 'Card not found'}, 404
+    return {'error': 'User not found'}, 404
 
 # UPDATE (requires admin or owner)
 @users_bp.route('/<int:id>/', methods=['PUT','PATCH'])

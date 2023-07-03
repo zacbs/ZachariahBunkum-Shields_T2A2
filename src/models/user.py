@@ -1,9 +1,9 @@
 from init import db, ma
-from marshmallow.validate import ValidationError
-from marshmallow import fields, validates_schema
+from marshmallow import fields
 
-# List of valid study locations
-VALID_LOCATIONS = ['On campus - Library', 'On Campus - Outdoor study','On campus - Study hall' , 'Online', 'NULL']
+user_location = db.Table('user_location',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('location_id', db.Integer, db.ForeignKey('locations.id')))
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -13,19 +13,27 @@ class User(db.Model):
     email = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
     study_times = db.Column(db.String)
-    study_location = db.Column(db.String)
     interests = db.Column(db.String)
     studying = db.Column(db.String)
     is_admin = db.Column(db.Boolean, default=False)
-
+    study_locations = db.relationship('Location', secondary=user_location, back_populates='users_locations')
 
 class UserSchema(ma.Schema):
-    # @validates_schema()
-    # def validate_study_location(self, data, **kwargs):
-    #     study_location = [x for x in VALID_LOCATIONS if x.upper() == data['study_location'].upper()]
-    #     if len(study_location) == 0:
-    #         raise ValidationError(f'Location must be one of: {VALID_LOCATIONS}')
-
-    #     data['study_location'] = study_location[0]
+    study_locations = fields.List(fields.Nested('LocationSchema', exclude=['users_locations']))
     class Meta:
-        fields = ('name', 'email', 'password', 'study_times', 'study_location', 'interests', 'studying', 'is_admin')
+        fields = ('id', 'name', 'email', 'password', 'study_times', 'study_location', 'interests', 'studying', 'is_admin', 'study_locations')
+
+
+class Location(db.Model):
+    __tablename__ = 'locations'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    description = db.Column(db.String)
+    users_locations = db.relationship('User', secondary=user_location, back_populates='study_locations')
+
+
+class LocationSchema(ma.Schema):
+    users_locations = fields.List(fields.Nested('UserSchema', exclude=['study_locations', 'password', 'email', 'is_admin']))
+    class Meta:
+        fields = ('id', 'name', 'description', 'users_locations')

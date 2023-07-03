@@ -5,6 +5,7 @@ from init import db, ma, bcrypt, jwt
 from blueprints.cli_bp import cli_bp
 from blueprints.auth_bp import auth_bp
 from blueprints.users_bp import users_bp
+from blueprints.locations_bp import locations_bp
 
 def setup():
     app = Flask(__name__)
@@ -24,6 +25,7 @@ def setup():
     app.register_blueprint(cli_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(users_bp)
+    app.register_blueprint(locations_bp)
 
     return app
 
